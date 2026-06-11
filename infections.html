@@ -1,0 +1,1379 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infection Control: The Clinical Defender Simulator</title>
+    <!-- Tailwind CSS for modern responsive utility design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for medical & clinical icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(242, 252, 254, 1) 0%, rgba(220, 240, 248, 1) 90%);
+        }
+        .heading-font {
+            font-family: 'Outfit', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Header Navigation bar -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50 transition-all shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center text-white shadow-md shadow-teal-200">
+                    <i class="fa-solid fa-shield-virus text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="heading-font font-bold text-slate-900 tracking-tight leading-none text-base sm:text-lg">Clinical Defender</h1>
+                    <span class="text-xs font-semibold text-teal-600 tracking-wider uppercase">Infection Control 101</span>
+                </div>
+            </div>
+            
+            <!-- Progress Tracker -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex flex-col text-right">
+                    <span class="text-xs text-slate-400 font-medium">Your Progress</span>
+                    <span id="progress-percent" class="text-sm font-bold text-teal-600">0% Complete</span>
+                </div>
+                <div class="w-24 sm:w-32 bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200/50">
+                    <div id="progress-bar" class="bg-teal-500 h-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+                <div class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100 flex items-center gap-1">
+                    <i class="fa-solid fa-star text-amber-400"></i>
+                    <span id="score-display">0 XP</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-5xl w-full mx-auto p-4 sm:p-6 md:p-8 flex flex-col justify-center">
+        
+        <!-- MODULE WINDOW -->
+        <div class="bg-white rounded-3xl shadow-xl shadow-slate-100 border border-slate-100 overflow-hidden min-h-[550px] flex flex-col transition-all duration-300">
+            
+            <!-- Top Alert banner for notifications -->
+            <div id="alert-banner" class="hidden transition-all duration-300 px-6 py-3 border-b text-sm font-medium flex justify-between items-center">
+                <span id="alert-message"></span>
+                <button onclick="closeAlert()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Header of current step -->
+            <div class="bg-gradient-to-r from-slate-50 to-teal-50/20 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <span id="step-badge" class="bg-teal-100 text-teal-800 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider"></span>
+                    <h2 id="step-title" class="heading-font font-bold text-slate-800 text-base sm:text-lg"></h2>
+                </div>
+                <div class="text-xs font-semibold text-slate-400">
+                    Professor's Lounge
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div id="content-body" class="p-6 sm:p-8 flex-grow flex flex-col justify-between">
+                <!-- Content will dynamically load here -->
+            </div>
+
+            <!-- Footer of current step -->
+            <div class="bg-slate-50/50 px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row sm:justify-between items-center gap-3">
+                <button id="prev-btn" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+                <div class="hidden sm:block text-xs text-slate-400 font-medium">
+                    Infection Control Interactive Lesson • Nursing Dept.
+                </div>
+                <button id="next-btn" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold shadow-md shadow-teal-100 transition flex items-center justify-center gap-2">
+                    Next <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Professor Mentorship Sidebar (Modal Trigger/Floating Coach) -->
+    <div class="fixed bottom-4 right-4 z-40">
+        <button onclick="toggleCoach()" class="bg-slate-900 hover:bg-slate-800 text-white p-3 rounded-full shadow-xl flex items-center space-x-2 border border-slate-700 transition transform hover:scale-105">
+            <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <i class="fa-solid fa-user-nurse"></i>
+            <span class="text-xs font-bold uppercase pr-1">Professor Feedback</span>
+        </button>
+    </div>
+
+    <!-- Coach Modal overlay -->
+    <div id="coach-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex justify-end items-end p-4 md:p-6 transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 flex flex-col transform translate-y-10 transition-transform duration-300">
+            <div class="bg-gradient-to-r from-teal-600 to-cyan-600 p-5 text-white flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-xl">
+                        👩‍⚕️
+                    </div>
+                    <div>
+                        <h4 class="font-bold heading-font">Professor Henderson</h4>
+                        <p class="text-xs text-teal-100">Your Infection Control Mentor</p>
+                    </div>
+                </div>
+                <button onclick="toggleCoach()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 bg-slate-50/50 flex-grow max-h-[350px] overflow-y-auto">
+                <p id="coach-bubble" class="text-slate-600 text-sm leading-relaxed italic bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                    "Welcome to nursing school! Before you touch your first patient, we must build your armor. Let's master infection control together! Click 'Next' to begin our first scenario."
+                </p>
+            </div>
+            <div class="p-4 bg-white border-t border-slate-100 text-center">
+                <button onclick="toggleCoach()" class="text-xs font-bold text-teal-600 hover:text-teal-700 uppercase tracking-widest">Understood, Professor!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs text-slate-400/80 border-t border-slate-100 bg-white">
+        &copy; 2026 Community College School of Nursing. Licensed for Clinical Preparedness. All Simulations Active.
+    </footer>
+
+    <!-- INTERACTIVE ENGINE SCRIPT -->
+    <script>
+        // Global State
+        let currentStep = 0;
+        let score = 0;
+        const totalSteps = 7;
+        
+        // Custom interactive state storage
+        let chainInterventions = {
+            agent: false,
+            reservoir: false,
+            exit: false,
+            mode: false,
+            entry: false,
+            host: false
+        };
+        let currentHandwashStep = 0;
+        let ppeSequence = [];
+        let ppeDoffSequence = [];
+        let sortedPatients = {
+            contact: null,
+            droplet: null,
+            airborne: null
+        };
+        let scenarioAnswers = {};
+
+        // Module definitions
+        const steps = [
+            {
+                id: "welcome",
+                badge: "Intro",
+                title: "Welcome to Clinical Defender",
+                coachTip: "First-year nursing students, listen up: Infection control isn't just a checklist. It is a biological shield that protects your patients, your family, and yourself. Let's make safety your muscle memory."
+            },
+            {
+                id: "chain",
+                badge: "Module 1",
+                title: "The Chain of Infection",
+                coachTip: "Every infection is a puzzle requiring six perfect links to spread. As a nurse, you do not need to fight the whole chain—you only have to break ONE single link to save a life. Click each link below to inspect it and apply a clinical intervention to break the chain!"
+            },
+            {
+                id: "handwash",
+                badge: "Module 2",
+                title: "Asepsis: WHO Handwashing",
+                coachTip: "The most powerful weapon in healthcare is plain soap, friction, and water. Let's practice the World Health Organization (WHO) 6-step technique. Follow the prompts to build friction and clean every crevice!"
+            },
+            {
+                id: "ppe",
+                badge: "Module 3",
+                title: "PPE: Armor of the Nurse",
+                coachTip: "Personal Protective Equipment is useless if it's contaminated during application (Donning) or removal (Doffing). Sequence these correctly so you don't bring pathogens home!"
+            },
+            {
+                id: "precautions",
+                badge: "Module 4",
+                title: "Transmission-Based Isolation",
+                coachTip: "Standard precautions apply to everyone. But when specialized pathogens are present, we switch to Contact, Droplet, or Airborne rooms. Read the patient profiles and assign them to the correct precaution suites."
+            },
+            {
+                id: "simulation",
+                badge: "Module 5",
+                title: "Clinical Scenario Challenge",
+                coachTip: "Time for your clinical rotation! You are assigned to Room 304. Apply everything you've learned to safe-guard this virtual clinical shift. Watch your steps carefully!"
+            },
+            {
+                id: "results",
+                badge: "Graduation",
+                title: "Clinical Defense Certification",
+                coachTip: "Outstanding work, future nurse! Let's tally up your Clinical Defender XP points and see if you are ready to hit the clinical floor."
+            }
+        ];
+
+        // On Load
+        window.onload = function() {
+            renderStep();
+            updateUI();
+        };
+
+        // Render Controller
+        function renderStep() {
+            const container = document.getElementById("content-body");
+            const step = steps[currentStep];
+
+            // Update Header Meta
+            document.getElementById("step-badge").innerText = step.badge;
+            document.getElementById("step-title").innerText = step.title;
+            document.getElementById("coach-bubble").innerText = step.coachTip;
+
+            // Render Page Content
+            switch(step.id) {
+                case "welcome":
+                    renderWelcome(container);
+                    break;
+                case "chain":
+                    renderChainOfInfection(container);
+                    break;
+                case "handwash":
+                    renderHandwash(container);
+                    break;
+                case "ppe":
+                    renderPPE(container);
+                    break;
+                case "precautions":
+                    renderPrecautions(container);
+                    break;
+                case "simulation":
+                    renderSimulation(container);
+                    break;
+                case "results":
+                    renderResults(container);
+                    break;
+            }
+
+            // Button visibility configurations
+            const prevBtn = document.getElementById("prev-btn");
+            const nextBtn = document.getElementById("next-btn");
+
+            if (currentStep === 0) {
+                prevBtn.classList.add("invisible");
+            } else {
+                prevBtn.classList.remove("invisible");
+            }
+
+            if (currentStep === totalSteps - 1) {
+                nextBtn.innerHTML = `Restart Simulation <i class="fa-solid fa-rotate-right"></i>`;
+                nextBtn.className = "w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold transition flex items-center justify-center gap-2";
+            } else {
+                nextBtn.innerHTML = `Next Module <i class="fa-solid fa-arrow-right"></i>`;
+                nextBtn.className = "w-full sm:w-auto px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold shadow-md shadow-teal-100 transition flex items-center justify-center gap-2";
+            }
+        }
+
+        // Navigation
+        document.getElementById("prev-btn").onclick = function() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderStep();
+                updateUI();
+            }
+        };
+
+        document.getElementById("next-btn").onclick = function() {
+            if (currentStep < totalSteps - 1) {
+                // Pre-flight checks for completion
+                if (!canProceed()) {
+                    return; // Prevent forward motion if criteria not met
+                }
+                currentStep++;
+                renderStep();
+                updateUI();
+            } else {
+                // Reset everything
+                currentStep = 0;
+                score = 0;
+                chainInterventions = { agent: false, reservoir: false, exit: false, mode: false, entry: false, host: false };
+                currentHandwashStep = 0;
+                ppeSequence = [];
+                ppeDoffSequence = [];
+                sortedPatients = { contact: null, droplet: null, airborne: null };
+                scenarioAnswers = {};
+                renderStep();
+                updateUI();
+            }
+        };
+
+        function canProceed() {
+            const step = steps[currentStep];
+            if (step.id === "chain") {
+                const broken = Object.values(chainInterventions).filter(Boolean).length;
+                if (broken < 3) {
+                    showAlert("⚠️ Please break at least 3 links of infection to understand clinical defense!", "amber");
+                    return false;
+                }
+            } else if (step.id === "handwash") {
+                if (currentHandwashStep < 6) {
+                    showAlert("🧼 Practice the handwashing steps to completion before entering the clinical area!", "amber");
+                    return false;
+                }
+            } else if (step.id === "ppe") {
+                if (ppeSequence.length < 4 || ppeDoffSequence.length < 4) {
+                    showAlert("🛡️ Complete both Donning and Doffing protective sequences before treating patients!", "amber");
+                    return false;
+                }
+            } else if (step.id === "precautions") {
+                if (!sortedPatients.contact || !sortedPatients.droplet || !sortedPatients.airborne) {
+                    showAlert("🛌 Assign all three patients to their designated precaution rooms first!", "amber");
+                    return false;
+                }
+            }
+            closeAlert();
+            return true;
+        }
+
+        function updateUI() {
+            const pct = Math.round((currentStep / (totalSteps - 1)) * 100);
+            document.getElementById("progress-bar").style.width = `${pct}%`;
+            document.getElementById("progress-percent").innerText = `${pct}% Complete`;
+            document.getElementById("score-display").innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> ${score} XP`;
+        }
+
+        // Professor/Coach Toggle
+        function toggleCoach() {
+            const modal = document.getElementById("coach-modal");
+            const isOpen = !modal.classList.contains("opacity-0");
+            
+            if (isOpen) {
+                modal.classList.add("opacity-0", "pointer-events-none");
+                modal.firstElementChild.classList.add("translate-y-10");
+            } else {
+                modal.classList.remove("opacity-0", "pointer-events-none");
+                modal.firstElementChild.classList.remove("translate-y-10");
+            }
+        }
+
+        // Custom Notification Alert Box
+        function showAlert(msg, type = "teal") {
+            const banner = document.getElementById("alert-banner");
+            const text = document.getElementById("alert-message");
+            text.innerText = msg;
+            
+            banner.className = "transition-all duration-300 px-6 py-3 border-b text-sm font-medium flex justify-between items-center";
+            if (type === "amber") {
+                banner.classList.add("bg-amber-50", "text-amber-800", "border-amber-200");
+            } else if (type === "rose") {
+                banner.classList.add("bg-rose-50", "text-rose-800", "border-rose-200");
+            } else {
+                banner.classList.add("bg-teal-50", "text-teal-800", "border-teal-200");
+            }
+            banner.classList.remove("hidden");
+        }
+
+        function closeAlert() {
+            document.getElementById("alert-banner").classList.add("hidden");
+        }
+
+        // ==========================================
+        // MODULE 1: WELCOME SCREEN
+        // ==========================================
+        function renderWelcome(container) {
+            container.innerHTML = `
+                <div class="flex flex-col md:flex-row items-center gap-8 my-auto">
+                    <div class="flex-1 space-y-6">
+                        <div class="inline-flex items-center space-x-2 bg-teal-50 text-teal-700 px-3 py-1.5 rounded-full text-xs font-bold border border-teal-100">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>NURSING LAB PRE-ROTATION</span>
+                        </div>
+                        <h3 class="heading-font text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
+                            Defend Your Patients from <span class="text-teal-600 underline decoration-teal-300 decoration-wavy">Pathogenic Threats</span>
+                        </h3>
+                        <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                            Welcome, Student Nurse! In this simulation, you'll step into our virtual simulation lab. You will explore critical aseptic protocols, break transmission chains, and test your decision-making in a high-stakes clinical scenario.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex items-center space-x-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                <span class="text-2xl">🦠</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-800">Learn</h4>
+                                    <p class="text-[10px] text-slate-400">Pathology chains</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                <span class="text-2xl">🧤</span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-800">Practice</h4>
+                                    <p class="text-[10px] text-slate-400">PPE & Sanitization</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="currentStep++; renderStep(); updateUI();" class="w-full sm:w-auto px-8 py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold transition transform active:scale-95 shadow-lg shadow-slate-200 flex items-center justify-center gap-2">
+                            Enter Simulation Lab <i class="fa-solid fa-door-open"></i>
+                        </button>
+                    </div>
+                    <div class="flex-1 w-full max-w-sm flex justify-center">
+                        <div class="relative bg-teal-50 border border-teal-100 rounded-3xl p-6 shadow-inner w-full flex flex-col items-center justify-center space-y-4">
+                            <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-md border-4 border-teal-400 text-4xl animate-bounce">
+                                🌡️
+                            </div>
+                            <div class="text-center space-y-1">
+                                <h4 class="font-bold text-slate-800">Ready to earn clinical XP?</h4>
+                                <p class="text-xs text-slate-500">Perfect scores unlock the Professional Clinical Defender Badge!</p>
+                            </div>
+                            <div class="bg-white/80 p-3 rounded-xl border border-teal-100/50 w-full text-center">
+                                <p class="text-xs text-teal-700 italic">"First, do no harm. Hygiene is where safety begins."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // MODULE 2: CHAIN OF INFECTION
+        // ==========================================
+        function renderChainOfInfection(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="text-center max-w-2xl mx-auto space-y-2">
+                        <h3 class="heading-font text-2xl font-bold text-slate-900">Interactive Chain of Infection</h3>
+                        <p class="text-xs text-slate-500">Pathogens must traverse all six steps to infect a host. Click on each node to identify clinical interventions and "break" that specific link of transmission.</p>
+                    </div>
+
+                    <!-- Chain Map Graphics -->
+                    <div class="grid grid-cols-2 md:grid-cols-6 gap-3 pt-4">
+                        
+                        <!-- Link 1 -->
+                        <div onclick="selectChainLink('agent')" id="chain-agent" class="cursor-pointer group relative p-4 rounded-2xl border-2 text-center transition flex flex-col justify-between items-center min-h-[140px] bg-slate-50 border-slate-200 hover:border-teal-400">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg bg-teal-100 text-teal-700" id="icon-agent">1</div>
+                            <h4 class="text-xs font-bold mt-2">Infectious Agent</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Bacteria, Virus, Fungi</p>
+                            <span id="badge-agent" class="absolute -top-2 right-2 text-[9px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded-full font-bold">INTACT</span>
+                        </div>
+
+                        <!-- Link 2 -->
+                        <div onclick="selectChainLink('reservoir')" id="chain-reservoir" class="cursor-pointer group relative p-4 rounded-2xl border-2 text-center transition flex flex-col justify-between items-center min-h-[140px] bg-slate-50 border-slate-200 hover:border-teal-400">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg bg-teal-100 text-teal-700" id="icon-reservoir">2</div>
+                            <h4 class="text-xs font-bold mt-2">Reservoir</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Lungs, Water, Flesh</p>
+                            <span id="badge-reservoir" class="absolute -top-2 right-2 text-[9px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded-full font-bold">INTACT</span>
+                        </div>
+
+                        <!-- Link 3 -->
+                        <div onclick="selectChainLink('exit')" id="chain-exit" class="cursor-pointer group relative p-4 rounded-2xl border-2 text-center transition flex flex-col justify-between items-center min-h-[140px] bg-slate-50 border-slate-200 hover:border-teal-400">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg bg-teal-100 text-teal-700" id="icon-exit">3</div>
+                            <h4 class="text-xs font-bold mt-2">Portal of Exit</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Coughing, Cuts, Blood</p>
+                            <span id="badge-exit" class="absolute -top-2 right-2 text-[9px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded-full font-bold">INTACT</span>
+                        </div>
+
+                        <!-- Link 4 -->
+                        <div onclick="selectChainLink('mode')" id="chain-mode" class="cursor-pointer group relative p-4 rounded-2xl border-2 text-center transition flex flex-col justify-between items-center min-h-[140px] bg-slate-50 border-slate-200 hover:border-teal-400">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg bg-teal-100 text-teal-700" id="icon-mode">4</div>
+                            <h4 class="text-xs font-bold mt-2">Mode of Trans.</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Direct, Airborne, Droplet</p>
+                            <span id="badge-mode" class="absolute -top-2 right-2 text-[9px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded-full font-bold">INTACT</span>
+                        </div>
+
+                        <!-- Link 5 -->
+                        <div onclick="selectChainLink('entry')" id="chain-entry" class="cursor-pointer group relative p-4 rounded-2xl border-2 text-center transition flex flex-col justify-between items-center min-h-[140px] bg-slate-50 border-slate-200 hover:border-teal-400">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg bg-teal-100 text-teal-700" id="icon-entry">5</div>
+                            <h4 class="text-xs font-bold mt-2">Portal of Entry</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Inhalation, IV Lines, Catheter</p>
+                            <span id="badge-entry" class="absolute -top-2 right-2 text-[9px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded-full font-bold">INTACT</span>
+                        </div>
+
+                        <!-- Link 6 -->
+                        <div onclick="selectChainLink('host')" id="chain-host" class="cursor-pointer group relative p-4 rounded-2xl border-2 text-center transition flex flex-col justify-between items-center min-h-[140px] bg-slate-50 border-slate-200 hover:border-teal-400">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg bg-teal-100 text-teal-700" id="icon-host">6</div>
+                            <h4 class="text-xs font-bold mt-2">Susceptible Host</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Elderly, Surgical, Diabetic</p>
+                            <span id="badge-host" class="absolute -top-2 right-2 text-[9px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded-full font-bold">INTACT</span>
+                        </div>
+
+                    </div>
+
+                    <!-- Interactive Action Center -->
+                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 flex flex-col space-y-4">
+                        <div class="flex items-center space-x-2 text-teal-800">
+                            <i class="fa-solid fa-stethoscope"></i>
+                            <span class="font-bold text-sm heading-font uppercase">Clinical Intervention Panel</span>
+                        </div>
+                        <div id="intervention-content" class="text-center py-6 text-slate-500 text-sm">
+                            <i class="fa-solid fa-arrow-pointer text-2xl text-teal-400 animate-bounce mb-2 block"></i>
+                            Select a node in the Chain of Infection above to discover how you break it.
+                        </div>
+                    </div>
+                </div>
+            `;
+            // Restore previous selections in the DOM if we are reloading
+            Object.keys(chainInterventions).forEach(key => {
+                if (chainInterventions[key]) {
+                    applyChainVisuals(key);
+                }
+            });
+        }
+
+        const chainInterventionDetails = {
+            agent: {
+                title: "Infectious Agent (Microbes)",
+                desc: "These are pathogenic microbes capable of causing infection (e.g., MRSA, influenza). We block them with early pathogen identification and pharmacological intervention.",
+                options: [
+                    { label: "Give Antibiotics / Antivirals promptly", correct: true, score: 20 },
+                    { label: "Check diagnostic cultures before broad antibiotics", correct: true, score: 20 },
+                    { label: "Apply moisturizing lotion", correct: false }
+                ]
+            },
+            reservoir: {
+                title: "Reservoir (The Pathogen's Residence)",
+                desc: "Where pathogens live, reproduce, and wait to strike. This includes humans, damp clinical environments, or stagnant water reservoirs.",
+                options: [
+                    { label: "Moisturize wound dressings periodically", correct: false },
+                    { label: "Sanitize & disinfect surfaces with biocides", correct: true, score: 20 },
+                    { label: "Change soiled linens and wipe down equipment bedrails", correct: true, score: 20 }
+                ]
+            },
+            exit: {
+                title: "Portal of Exit",
+                desc: "How the pathogen escapes the reservoir (e.g., through sputum droplets, wound drainage, or catheter secretions).",
+                options: [
+                    { label: "Cover coughs with clean tissues or elbows", correct: true, score: 20 },
+                    { label: "Keep clinical wounds covered with dry dressings", correct: true, score: 20 },
+                    { label: "Administer high-flow oxygen", correct: false }
+                ]
+            },
+            mode: {
+                title: "Mode of Transmission",
+                desc: "The vector or medium by which the pathogen moves to a new victim (e.g., hands of the healthcare worker, droplets in the air).",
+                options: [
+                    { label: "Always perform thorough hand hygiene between cases", correct: true, score: 20 },
+                    { label: "Clean shared equipment (stethoscopes) between rounds", correct: true, score: 20 },
+                    { label: "Turn off Room Air Conditioning systems", correct: false }
+                ]
+            },
+            entry: {
+                title: "Portal of Entry",
+                desc: "The access path into a new host (e.g., catheter site, open surgical wounds, unmasked mucous membranes).",
+                options: [
+                    { label: "Ensure indwelling catheter bags remain closed and unkinked", correct: true, score: 20 },
+                    { label: "Apply aseptic technique when cleaning IV line hubs", correct: true, score: 20 },
+                    { label: "Limit patient room visitation hours", correct: false }
+                ]
+            },
+            host: {
+                title: "Susceptible Host",
+                desc: "Individuals with weak immunities, comorbidities, surgical openings, or invasive life-support lines.",
+                options: [
+                    { label: "Optimize nutrition and blood sugar control", correct: true, score: 20 },
+                    { label: "Keep immunizations updated for clinical personnel", correct: true, score: 20 },
+                    { label: "Provide a light bed sheet", correct: false }
+                ]
+            }
+        };
+
+        function selectChainLink(key) {
+            const data = chainInterventionDetails[key];
+            const interventionDiv = document.getElementById("intervention-content");
+            
+            // Highlight target card
+            document.querySelectorAll("[id^='chain-']").forEach(div => {
+                div.classList.remove("border-teal-500", "bg-teal-50/50");
+            });
+            document.getElementById(`chain-${key}`).classList.add("border-teal-500", "bg-teal-50/50");
+
+            let buttonsHtml = data.options.map((opt, idx) => {
+                return `<button onclick="testChainIntervention('${key}', ${idx})" class="w-full text-left p-3.5 bg-white border border-slate-200 hover:border-teal-500 hover:bg-teal-50/20 rounded-xl transition text-xs sm:text-sm font-semibold flex items-center space-x-3">
+                    <span class="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-xs text-slate-500 border border-slate-200">${String.fromCharCode(65+idx)}</span>
+                    <span class="text-slate-700">${opt.label}</span>
+                </button>`;
+            }).join('');
+
+            interventionDiv.innerHTML = `
+                <div class="text-left space-y-4">
+                    <div class="flex items-center justify-between border-b pb-2">
+                        <h4 class="font-bold text-slate-800 text-base flex items-center space-x-2">
+                            <span>🛡️ ${data.title}</span>
+                        </h4>
+                        <span id="current-break-status-${key}" class="text-[10px] font-bold px-2 py-0.5 rounded ${chainInterventions[key] ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}">
+                            ${chainInterventions[key] ? 'BROKEN BY INTERVENTION' : 'CHAIN INTACT'}
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed">${data.desc}</p>
+                    <div class="space-y-2">
+                        <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Choose a nursing action to break this link:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            ${buttonsHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function testChainIntervention(key, idx) {
+            const option = chainInterventionDetails[key].options[idx];
+            
+            if (option.correct) {
+                if (!chainInterventions[key]) {
+                    chainInterventions[key] = true;
+                    score += option.score;
+                    updateUI();
+                }
+                
+                applyChainVisuals(key);
+                
+                // Refresh clinical intervention panel display state
+                const statusBadge = document.getElementById(`current-break-status-${key}`);
+                if (statusBadge) {
+                    statusBadge.innerText = "BROKEN BY INTERVENTION";
+                    statusBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800";
+                }
+
+                showAlert(`🎉 Perfect! You broke the chain at "${chainInterventionDetails[key].title}" link! +${option.score} XP`, "emerald");
+            } else {
+                showAlert(`❌ That action does not directly stop transmission at this specific link. Try again!`, "rose");
+            }
+        }
+
+        function applyChainVisuals(key) {
+            const node = document.getElementById(`chain-${key}`);
+            const badge = document.getElementById(`badge-${key}`);
+            const icon = document.getElementById(`icon-${key}`);
+            
+            if (node && badge && icon) {
+                node.className = "cursor-pointer group relative p-4 rounded-2xl border-2 text-center transition flex flex-col justify-between items-center min-h-[140px] bg-emerald-50 border-emerald-500 shadow-md shadow-emerald-50";
+                badge.innerText = "BROKEN";
+                badge.className = "absolute -top-2 right-2 text-[9px] bg-emerald-500 text-white px-1.5 py-0.5 rounded-full font-bold";
+                icon.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i>`;
+                icon.className = "w-10 h-10 rounded-full flex items-center justify-center bg-white border border-emerald-200";
+            }
+        }
+
+        // ==========================================
+        // MODULE 3: WHO HANDWASHING SIMULATOR
+        // ==========================================
+        const handwashSteps = [
+            {
+                title: "Palm to Palm",
+                instructions: "Apply soap and rub palms together to produce a thick lather. Friction is key!",
+                emoji: "🤲",
+                tip: "Make sure you generate enough friction to cover both palms evenly."
+            },
+            {
+                title: "Back of Hands",
+                instructions: "Rub the back of each hand with the opposite palm, interlacing your fingers to reach the spaces between.",
+                emoji: "🤚",
+                tip: "Clean from the knuckles all the way down to the finger webbing."
+            },
+            {
+                title: "Interlaced Palms",
+                instructions: "Face palm-to-palm again, but this time interlace your fingers together, rubbing forcefully back and forth.",
+                emoji: "🤝",
+                tip: "Webbing spaces frequently harbor transient bacterial flora."
+            },
+            {
+                title: "Interlocked Fingers",
+                instructions: "Interlock the backs of your fingers against opposing palms, rubbing side-to-side to clean the finger knuckles.",
+                emoji: "🤜",
+                tip: "This focuses on the outer creases of your outer joints."
+            },
+            {
+                title: "Rotational Thumb Rub",
+                instructions: "Clasp your right thumb with your left palm and rub rotationally. Repeat for the left thumb.",
+                emoji: "👍",
+                tip: "Thumbs are the most missed part during quick handwashing!"
+            },
+            {
+                title: "Clasped Fingertips",
+                instructions: "Rotate your clasped fingertips in the opposite palm. This scrubs under your nails where germs hide.",
+                emoji: "💅",
+                tip: "Nail beds hold the highest concentrations of microorganisms on the hand."
+            }
+        ];
+
+        function renderHandwash(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="text-center max-w-2xl mx-auto">
+                        <h3 class="heading-font text-2xl font-bold text-slate-900">WHO 6-Step Sanitization Simulator</h3>
+                        <p class="text-xs text-slate-500 mt-1">Water temperature alone does not kill bacteria; mechanical friction does! Click the interaction button repeatedly to complete the steps.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        
+                        <!-- Left Panel: Interactive Hand Animation -->
+                        <div class="md:col-span-4 bg-slate-50 border border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-center space-y-4 min-h-[300px]">
+                            <div class="relative w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-lg border border-teal-100">
+                                <span id="handwash-emoji" class="text-5xl animate-pulse">🤲</span>
+                                <div id="bubble-spray" class="absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none">
+                                    <span class="text-2xl animate-ping absolute">🧼</span>
+                                    <span class="text-xl animate-ping absolute" style="animation-delay: 0.2s">🫧</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Cleanliness Friction Meter -->
+                            <div class="w-full space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold text-slate-500 uppercase">
+                                    <span>Mechanical Friction</span>
+                                    <span id="friction-pct">0%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden border border-slate-300">
+                                    <div id="friction-bar" class="bg-gradient-to-r from-teal-400 to-emerald-500 h-full transition-all duration-150" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Step Guidance -->
+                        <div class="md:col-span-8 space-y-4">
+                            <!-- Steps Indicators -->
+                            <div class="flex justify-between items-center gap-1.5 overflow-x-auto pb-2">
+                                ${handwashSteps.map((s, idx) => `
+                                    <div id="hw-step-dot-${idx}" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs border-2 transition-all ${idx === 0 ? 'border-teal-500 bg-teal-50 text-teal-800' : 'border-slate-200 text-slate-400 bg-white'}">
+                                        ${idx + 1}
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <!-- Current Step Details -->
+                            <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm min-h-[160px]">
+                                <h4 id="hw-step-title" class="font-extrabold text-slate-800 text-lg heading-font">Step 1: Palm to Palm</h4>
+                                <p id="hw-step-instructions" class="text-sm text-slate-600 leading-relaxed">Apply soap and rub palms together to produce a thick lather. Friction is key!</p>
+                                <div class="bg-amber-50 text-amber-800 p-2.5 rounded-lg border border-amber-100 text-xs flex items-start gap-2">
+                                    <i class="fa-solid fa-lightbulb mt-0.5"></i>
+                                    <span id="hw-step-tip">Make sure you generate enough friction to cover both palms evenly.</span>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Scrub Button -->
+                            <button id="scrub-action-btn" onclick="performFrictionScrub()" class="w-full py-4 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold rounded-2xl shadow-lg shadow-teal-100 transition-all flex items-center justify-center gap-2 text-base select-none">
+                                <i class="fa-solid fa-hands-bubbles animate-bounce"></i> Click Repeatedly to Scrub Hands
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+            
+            // Check state in case we navigated back
+            if (currentHandwashStep > 0) {
+                currentHandwashStep = 0; // Reset for interactive play
+            }
+        }
+
+        let frictionLevel = 0;
+        function performFrictionScrub() {
+            if (currentHandwashStep >= 6) {
+                showAlert("✨ Your hands are clinically sanitized! Head over to the next module.", "emerald");
+                return;
+            }
+
+            // Animate spray of bubbles
+            const spray = document.getElementById("bubble-spray");
+            spray.classList.remove("opacity-0");
+            setTimeout(() => {
+                spray.classList.add("opacity-0");
+            }, 300);
+
+            // Increment friction progress
+            frictionLevel += 15;
+            if (frictionLevel > 100) frictionLevel = 100;
+
+            document.getElementById("friction-bar").style.width = `${frictionLevel}%`;
+            document.getElementById("friction-pct").innerText = `${frictionLevel}%`;
+
+            // If current step is complete
+            if (frictionLevel >= 100) {
+                // Award points
+                score += 15;
+                updateUI();
+
+                // Update old dot status to marked
+                const prevDot = document.getElementById(`hw-step-dot-${currentHandwashStep}`);
+                prevDot.innerHTML = `<i class="fa-solid fa-check"></i>`;
+                prevDot.className = "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs border-2 border-emerald-500 bg-emerald-50 text-emerald-800";
+
+                // Progress to next step
+                currentHandwashStep++;
+                frictionLevel = 0;
+
+                if (currentHandwashStep < 6) {
+                    // Update layout for next step
+                    const step = handwashSteps[currentHandwashStep];
+                    document.getElementById("handwash-emoji").innerText = step.emoji;
+                    document.getElementById("hw-step-title").innerText = `Step ${currentHandwashStep + 1}: ${step.title}`;
+                    document.getElementById("hw-step-instructions").innerText = step.instructions;
+                    document.getElementById("hw-step-tip").innerText = step.tip;
+
+                    // Update next dot active style
+                    const currentDot = document.getElementById(`hw-step-dot-${currentHandwashStep}`);
+                    currentDot.className = "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs border-2 border-teal-500 bg-teal-50 text-teal-800";
+                    
+                    document.getElementById("friction-bar").style.width = "0%";
+                    document.getElementById("friction-pct").innerText = "0%";
+
+                    showAlert(`👏 Step completed! Transitioning to step ${currentHandwashStep + 1}. Keep going!`, "teal");
+                } else {
+                    // Hand hygiene fully completed!
+                    document.getElementById("handwash-emoji").innerText = "🧼";
+                    document.getElementById("hw-step-title").innerHTML = `<span class="text-emerald-600">🎉 Cleanliness Target Achieved!</span>`;
+                    document.getElementById("hw-step-instructions").innerText = "Excellent. You have successfully completed the 6 WHO hand hygiene friction stages. You are ready to don PPE.";
+                    document.getElementById("scrub-action-btn").disabled = true;
+                    document.getElementById("scrub-action-btn").className = "w-full py-4 bg-emerald-100 text-emerald-800 font-bold rounded-2xl border border-emerald-200 transition-all flex items-center justify-center gap-2 cursor-not-allowed";
+                    document.getElementById("scrub-action-btn").innerHTML = `<i class="fa-solid fa-circle-check"></i> Hands Clinically Sterile`;
+                    showAlert("✨ Excellent surgical asepsis technique! Let's enter the staging zone.", "emerald");
+                }
+            }
+        }
+
+        // ==========================================
+        // MODULE 4: PPE DONNING & DOFFING
+        // ==========================================
+        const ppeItems = [
+            { id: "gown", label: "Protective Gown", donningIndex: 0, doffingIndex: 1, icon: "🥼", desc: "Covers trunk and arms from bodily fluids." },
+            { id: "mask", label: "Mask / Respirator", donningIndex: 1, doffingIndex: 3, icon: "😷", desc: "Protects membranes of nose and mouth." },
+            { id: "goggles", label: "Goggles / Face Shield", donningIndex: 2, doffingIndex: 2, icon: "🥽", desc: "Shields eyes from splatters and droplets." },
+            { id: "gloves", label: "Sterile Gloves", donningIndex: 3, doffingIndex: 0, icon: "🧤", desc: "Surgical-grade hand shield." }
+        ];
+
+        function renderPPE(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="text-center max-w-2xl mx-auto">
+                        <h3 class="heading-font text-2xl font-bold text-slate-900">PPE Sequencing Challenge</h3>
+                        <p class="text-xs text-slate-500 mt-1">Nurses must don (put on) and doff (take off) Personal Protective Equipment in highly specific sequences to avoid self-contamination. Click the items to arrange them in order.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        
+                        <!-- Panel A: Donning Sequence -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 flex flex-col justify-between space-y-4">
+                            <div class="flex items-center justify-between border-b pb-2">
+                                <h4 class="font-extrabold text-slate-800 text-sm heading-font uppercase flex items-center gap-2">
+                                    <span>👉 1. DONNING Sequence (Putting On)</span>
+                                </h4>
+                                <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2 py-0.5 rounded">Clean-To-Dirty</span>
+                            </div>
+                            
+                            <!-- Available Items Pool for Donning -->
+                            <div id="donning-pool" class="flex flex-wrap gap-2 justify-center py-2">
+                                <!-- Generated Dynamically -->
+                            </div>
+
+                            <!-- User Sequence Slots -->
+                            <div class="space-y-2">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Selected Donning Order:</p>
+                                <div id="donning-slots" class="grid grid-cols-4 gap-2">
+                                    <div class="border-2 border-dashed border-slate-200 rounded-xl h-14 flex items-center justify-center text-xs text-slate-300 font-bold">1st</div>
+                                    <div class="border-2 border-dashed border-slate-200 rounded-xl h-14 flex items-center justify-center text-xs text-slate-300 font-bold">2nd</div>
+                                    <div class="border-2 border-dashed border-slate-200 rounded-xl h-14 flex items-center justify-center text-xs text-slate-300 font-bold">3rd</div>
+                                    <div class="border-2 border-dashed border-slate-200 rounded-xl h-14 flex items-center justify-center text-xs text-slate-300 font-bold">4th</div>
+                                </div>
+                            </div>
+
+                            <button onclick="checkDonningOrder()" class="w-full py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition">Verify Donning Order</button>
+                        </div>
+
+                        <!-- Panel B: Doffing Sequence -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 flex flex-col justify-between space-y-4">
+                            <div class="flex items-center justify-between border-b pb-2">
+                                <h4 class="font-extrabold text-slate-800 text-sm heading-font uppercase flex items-center gap-2">
+                                    <span>👈 2. DOFFING Sequence (Taking Off)</span>
+                                </h4>
+                                <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">Dirty-To-Clean</span>
+                            </div>
+                            
+                            <!-- Available Items Pool for Doffing -->
+                            <div id="doffing-pool" class="flex flex-wrap gap-2 justify-center py-2">
+                                <!-- Generated Dynamically -->
+                            </div>
+
+                            <!-- User Sequence Slots -->
+                            <div class="space-y-2">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Selected Doffing Order:</p>
+                                <div id="doffing-slots" class="grid grid-cols-4 gap-2">
+                                    <div class="border-2 border-dashed border-slate-200 rounded-xl h-14 flex items-center justify-center text-xs text-slate-300 font-bold">1st</div>
+                                    <div class="border-2 border-dashed border-slate-200 rounded-xl h-14 flex items-center justify-center text-xs text-slate-300 font-bold">2nd</div>
+                                    <div class="border-2 border-dashed border-slate-200 rounded-xl h-14 flex items-center justify-center text-xs text-slate-300 font-bold">3rd</div>
+                                    <div class="border-2 border-dashed border-slate-200 rounded-xl h-14 flex items-center justify-center text-xs text-slate-300 font-bold">4th</div>
+                                </div>
+                            </div>
+
+                            <button onclick="checkDoffingOrder()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition">Verify Doffing Order</button>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+            
+            ppeSequence = [];
+            ppeDoffSequence = [];
+            renderPPEPools();
+        }
+
+        function renderPPEPools() {
+            const donPool = document.getElementById("donning-pool");
+            const doffPool = document.getElementById("doffing-pool");
+
+            donPool.innerHTML = ppeItems.map(item => {
+                const disabled = ppeSequence.includes(item.id);
+                return `<button onclick="addPPESequence('don', '${item.id}')" ${disabled ? 'disabled' : ''} class="px-3.5 py-2.5 bg-white border border-slate-200 hover:border-sky-400 disabled:opacity-30 disabled:pointer-events-none rounded-xl text-xs font-bold transition flex items-center space-x-2">
+                    <span>${item.icon}</span>
+                    <span>${item.label}</span>
+                </button>`;
+            }).join('');
+
+            doffPool.innerHTML = ppeItems.map(item => {
+                const disabled = ppeDoffSequence.includes(item.id);
+                return `<button onclick="addPPESequence('doff', '${item.id}')" ${disabled ? 'disabled' : ''} class="px-3.5 py-2.5 bg-white border border-slate-200 hover:border-rose-400 disabled:opacity-30 disabled:pointer-events-none rounded-xl text-xs font-bold transition flex items-center space-x-2">
+                    <span>${item.icon}</span>
+                    <span>${item.label}</span>
+                </button>`;
+            }).join('');
+        }
+
+        function addPPESequence(mode, id) {
+            const item = ppeItems.find(p => p.id === id);
+            if (mode === "don") {
+                if (ppeSequence.length < 4 && !ppeSequence.includes(id)) {
+                    ppeSequence.push(id);
+                    renderPPESlots("don");
+                }
+            } else {
+                if (ppeDoffSequence.length < 4 && !ppeDoffSequence.includes(id)) {
+                    ppeDoffSequence.push(id);
+                    renderPPESlots("doff");
+                }
+            }
+            renderPPEPools();
+        }
+
+        function clearPPESlot(mode) {
+            if (mode === "don") {
+                ppeSequence = [];
+                renderPPESlots("don");
+            } else {
+                ppeDoffSequence = [];
+                renderPPESlots("doff");
+            }
+            renderPPEPools();
+        }
+
+        function renderPPESlots(mode) {
+            const container = document.getElementById(mode === "don" ? "donning-slots" : "doffing-slots");
+            const activeList = mode === "don" ? ppeSequence : ppeDoffSequence;
+
+            let html = "";
+            for (let i = 0; i < 4; i++) {
+                if (activeList[i]) {
+                    const item = ppeItems.find(p => p.id === activeList[i]);
+                    html += `<div class="bg-white border-2 border-slate-200 rounded-xl p-2 h-14 flex flex-col items-center justify-center shadow-sm relative group">
+                        <span class="text-lg">${item.icon}</span>
+                        <span class="text-[8px] font-bold text-slate-500 text-center uppercase tracking-tight truncate w-full">${item.label}</span>
+                        <button onclick="clearPPESlot('${mode}')" class="absolute -top-1.5 -right-1.5 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full w-4.5 h-4.5 text-[9px] flex items-center justify-center shadow-sm"><i class="fa-solid fa-xmark"></i></button>
+                    </div>`;
+                } else {
+                    let text = i === 0 ? "1st" : i === 1 ? "2nd" : i === 2 ? "3rd" : "4th";
+                    html += `<div class="border-2 border-dashed border-slate-200 rounded-xl h-14 flex items-center justify-center text-xs text-slate-300 font-bold">${text}</div>`;
+                }
+            }
+            container.innerHTML = html;
+        }
+
+        function checkDonningOrder() {
+            if (ppeSequence.length < 4) {
+                showAlert("⚠️ Select all four items to establish a complete sequence!", "amber");
+                return;
+            }
+
+            let correct = true;
+            ppeSequence.forEach((id, index) => {
+                const item = ppeItems.find(p => p.id === id);
+                if (item.donningIndex !== index) {
+                    correct = false;
+                }
+            });
+
+            if (correct) {
+                score += 50;
+                updateUI();
+                showAlert("🎉 Perfect Donning order! (Gown ➔ Mask ➔ Goggles ➔ Gloves). This shields your cleanest layers first. +50 XP", "emerald");
+            } else {
+                showAlert("❌ Incidental self-contamination potential detected. Remember the Golden rule of Donning: Bottom-Up (Gown first) & Outside-In (Gloves last). Reset and try again!", "rose");
+                clearPPESlot("don");
+            }
+        }
+
+        function checkDoffingOrder() {
+            if (ppeDoffSequence.length < 4) {
+                showAlert("⚠️ Select all four items to establish a complete sequence!", "amber");
+                return;
+            }
+
+            let correct = true;
+            ppeDoffSequence.forEach((id, index) => {
+                const item = ppeItems.find(p => p.id === id);
+                if (item.doffingIndex !== index) {
+                    correct = false;
+                }
+            });
+
+            if (correct) {
+                score += 50;
+                updateUI();
+                showAlert("🎉 Excellent Doffing order! (Gloves ➔ Gown ➔ Goggles ➔ Mask). Removing the most contaminated item (gloves) first minimizes spreading microbes. +50 XP", "emerald");
+            } else {
+                showAlert("❌ Stop! Self-contamination during removal occurs if you touch a clean surface with contaminated gloves, or remove your mask before the rest of your armor. Reset and try again!", "rose");
+                clearPPESlot("doff");
+            }
+        }
+
+        // ==========================================
+        // MODULE 5: ISOLATION ROOM SORTING
+        // ==========================================
+        const patientProfiles = [
+            { id: "patientA", name: "Mr. Davis (Room 1)", pathogen: "Clostridioides difficile (C. diff)", symptoms: "Profuse infectious diarrhea, foul odor.", roomType: "contact" },
+            { id: "patientB", name: "Mrs. Chen (Room 2)", pathogen: "Influenza Type A", symptoms: "High fever, wet cough, body aches.", roomType: "droplet" },
+            { id: "patientC", name: "Baby Noah (Room 3)", pathogen: "Active Tuberculosis (TB)", symptoms: "Hemoptysis (coughing up blood), night sweats.", roomType: "airborne" }
+        ];
+
+        function renderPrecautions(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="text-center max-w-2xl mx-auto">
+                        <h3 class="heading-font text-2xl font-bold text-slate-900">Isolation Precaution Sorting</h3>
+                        <p class="text-xs text-slate-500 mt-1">Different pathogens spread differently. Match the patient with the correct isolation precautions and requirements. Select a patient and click a room to place them.</p>
+                    </div>
+
+                    <!-- Room Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <!-- Contact Precaution Room -->
+                        <div onclick="placePatientInRoom('contact')" class="cursor-pointer border-2 border-amber-300 bg-amber-50/20 hover:bg-amber-50/50 p-5 rounded-2xl flex flex-col justify-between space-y-4 min-h-[180px] transition-all">
+                            <div class="flex justify-between items-center border-b border-amber-200 pb-2">
+                                <span class="text-xs font-bold text-amber-800 uppercase tracking-wider">🚪 Contact Room</span>
+                                <span class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">GOWN + GLOVES</span>
+                            </div>
+                            <div id="room-contact" class="flex-grow flex items-center justify-center">
+                                <div class="text-center py-4 text-slate-400 text-xs">
+                                    <i class="fa-solid fa-hospital-user text-3xl mb-1 block opacity-40"></i>
+                                    Click here to assign a patient
+                                </div>
+                            </div>
+                            <div class="text-[10px] text-amber-700/80 italic font-medium leading-tight">Requires: Soap and water wash upon exit (alcohol rub doesn't kill spores!).</div>
+                        </div>
+
+                        <!-- Droplet Precaution Room -->
+                        <div onclick="placePatientInRoom('droplet')" class="cursor-pointer border-2 border-emerald-300 bg-emerald-50/20 hover:bg-emerald-50/50 p-5 rounded-2xl flex flex-col justify-between space-y-4 min-h-[180px] transition-all">
+                            <div class="flex justify-between items-center border-b border-emerald-200 pb-2">
+                                <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">🚪 Droplet Room</span>
+                                <span class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">SURGICAL MASK</span>
+                            </div>
+                            <div id="room-droplet" class="flex-grow flex items-center justify-center">
+                                <div class="text-center py-4 text-slate-400 text-xs">
+                                    <i class="fa-solid fa-hospital-user text-3xl mb-1 block opacity-40"></i>
+                                    Click here to assign a patient
+                                </div>
+                            </div>
+                            <div class="text-[10px] text-emerald-700/80 italic font-medium leading-tight">Requires: Protective mask within 3 feet of patient contact.</div>
+                        </div>
+
+                        <!-- Airborne Precaution Room -->
+                        <div onclick="placePatientInRoom('airborne')" class="cursor-pointer border-2 border-indigo-300 bg-indigo-50/20 hover:bg-indigo-50/50 p-5 rounded-2xl flex flex-col justify-between space-y-4 min-h-[180px] transition-all">
+                            <div class="flex justify-between items-center border-b border-indigo-200 pb-2">
+                                <span class="text-xs font-bold text-indigo-800 uppercase tracking-wider">🚪 Airborne (AIIR)</span>
+                                <span class="text-[9px] bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-bold">N95 + NEGATIVE AIR</span>
+                            </div>
+                            <div id="room-airborne" class="flex-grow flex items-center justify-center">
+                                <div class="text-center py-4 text-slate-400 text-xs">
+                                    <i class="fa-solid fa-hospital-user text-3xl mb-1 block opacity-40"></i>
+                                    Click here to assign a patient
+                                </div>
+                            </div>
+                            <div class="text-[10px] text-indigo-700/80 italic font-medium leading-tight">Requires: Negative airflow pressure, N95 respirator.</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Patients Pool for selection -->
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-3">
+                        <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Admitted Patients in Waiting Bay (Select one first):</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            ${patientProfiles.map(p => `
+                                <div onclick="selectPatientForSorting('${p.id}')" id="patient-card-${p.id}" class="cursor-pointer p-4 bg-white border-2 border-slate-200 hover:border-teal-500 rounded-xl transition text-left space-y-2 relative">
+                                    <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center justify-between">
+                                        <span>👤 ${p.name}</span>
+                                        <span id="placed-badge-${p.id}" class="text-[9px] bg-slate-100 text-slate-500 px-1 py-0.5 rounded uppercase">Waiting</span>
+                                    </h4>
+                                    <p class="text-xs font-semibold text-slate-500">Pathogen: <span class="text-teal-600">${p.pathogen}</span></p>
+                                    <p class="text-[10px] text-slate-400">Symptoms: ${p.symptoms}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            selectedPatientId = null;
+            // Restore previous selections in the DOM if we are reloading
+            Object.keys(sortedPatients).forEach(roomKey => {
+                if (sortedPatients[roomKey]) {
+                    renderPlacedPatient(roomKey, sortedPatients[roomKey]);
+                }
+            });
+        }
+
+        let selectedPatientId = null;
+        function selectPatientForSorting(id) {
+            selectedPatientId = id;
+            document.querySelectorAll("[id^='patient-card-']").forEach(div => {
+                div.classList.remove("border-teal-500", "bg-teal-50/20");
+            });
+            document.getElementById(`patient-card-${id}`).classList.add("border-teal-500", "bg-teal-50/20");
+            showAlert("👍 Patient selected! Now click on the correct Isolation Precaution Room to place them.", "teal");
+        }
+
+        function placePatientInRoom(roomType) {
+            if (!selectedPatientId) {
+                showAlert("⚠️ Select a waiting patient card below first!", "amber");
+                return;
+            }
+
+            const p = patientProfiles.find(item => item.id === selectedPatientId);
+            
+            // Check if patient belongs in this room
+            if (p.roomType === roomType) {
+                sortedPatients[roomType] = p;
+                renderPlacedPatient(roomType, p);
+                
+                // Update Badge in selector card
+                const badge = document.getElementById(`placed-badge-${p.id}`);
+                badge.innerText = `PLACED: ${roomType}`;
+                badge.className = "text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1 py-0.5 rounded uppercase";
+                
+                // Clear selection
+                selectedPatientId = null;
+                document.getElementById(`patient-card-${p.id}`).classList.add("opacity-50", "pointer-events-none");
+                document.getElementById(`patient-card-${p.id}`).classList.remove("border-teal-500", "bg-teal-50/20");
+                
+                score += 40;
+                updateUI();
+                showAlert(`🎉 Excellent work placing ${p.name} in ${roomType} precautions! +40 XP`, "emerald");
+            } else {
+                showAlert(`❌ Clinical error. That room's transmission controls do not protect against "${p.pathogen}". Match the transmission vector to room requirements!`, "rose");
+            }
+        }
+
+        function renderPlacedPatient(roomType, p) {
+            const roomDiv = document.getElementById(`room-${roomType}`);
+            roomDiv.innerHTML = `
+                <div class="bg-white border border-slate-200/80 p-3 rounded-xl shadow-sm text-center space-y-1 w-full animate-fade-in">
+                    <span class="text-2xl block">🛌</span>
+                    <h5 class="text-xs font-bold text-slate-800">${p.name}</h5>
+                    <p class="text-[9px] text-teal-600 font-bold">${p.pathogen}</p>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // MODULE 6: CASE STUDY / SHIFT CHALLENGE
+        // ==========================================
+        const clinicalScenarios = [
+            {
+                qIndex: 0,
+                title: "Scenario 1: Entering the Spore Zone",
+                desc: "You are entering Room 301 to change linens for Mr. Davis, who has active Clostridioides difficile (C. diff). You successfully don your gown and gloves. When exiting the room, which hand hygiene action is clinically mandatory?",
+                options: [
+                    { label: "Vigorously rub hands with alcohol-based hand sanitizer", correct: false, rationale: "C. diff spores are encased in a protective outer layer that is physically unaffected by alcohol sanitizers. They must be mechanically washed off." },
+                    { label: "Perform a traditional handwash with soap and running water", correct: true, points: 50, rationale: "Correct! The mechanical friction of washing hands under running water with soap is the only way to rinse stubborn C. diff spores down the sink drain." },
+                    { label: "Wipe hands on a dry paper towel and apply fresh gloves", correct: false, rationale: "This does not neutralize or remove infectious particles, risking spreading contamination to other rooms." }
+                ]
+            },
+            {
+                qIndex: 1,
+                title: "Scenario 2: The Mask Conundrum",
+                desc: "You are prepping to draw blood from a patient with active Tuberculosis (TB). As you stand at the PPE staging closet, which face protection is required?",
+                options: [
+                    { label: "Standard 3-ply surgical procedural mask", correct: false, rationale: "Surgical masks do not filter micro-airborne pathogens and do not seal securely around the face." },
+                    { label: "Surgical mask combined with plastic eye goggles", correct: false, rationale: "Tuberculosis particles bypass surgical masks easily via side air gaps." },
+                    { label: "A fitted N95 particulate respirator", correct: true, points: 50, rationale: "Correct! Tuberculosis is a micro-airborne pathogen. A fitted N95 respirator is strictly required to filter microscopic organisms." }
+                ]
+            }
+        ];
+
+        let currentScenarioIdx = 0;
+
+        function renderSimulation(container) {
+            const sc = clinicalScenarios[currentScenarioIdx];
+            
+            let optionsHtml = sc.options.map((opt, idx) => {
+                return `<button onclick="submitScenarioAnswer(${idx})" class="w-full text-left p-4 bg-white hover:bg-slate-50 border border-slate-200 hover:border-teal-500 rounded-2xl transition text-xs sm:text-sm font-semibold flex items-start space-x-3">
+                    <span class="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-xs text-slate-500 border border-slate-200 mt-0.5 flex-shrink-0">${String.fromCharCode(65+idx)}</span>
+                    <span class="text-slate-700 leading-relaxed">${opt.label}</span>
+                </button>`;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="text-center max-w-2xl mx-auto">
+                        <h3 class="heading-font text-2xl font-bold text-slate-900">Virtual Clinical Shift</h3>
+                        <p class="text-xs text-slate-500 mt-1">Make direct clinical choices during your first ward shift. Let's practice safe, bedside thinking!</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <!-- Simulation Image/Graphic Box -->
+                        <div class="md:col-span-4 bg-gradient-to-br from-teal-500 to-indigo-600 rounded-3xl p-6 text-white flex flex-col justify-between min-h-[250px] shadow-lg shadow-teal-100">
+                            <div>
+                                <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase">Room 304 Rotation</span>
+                                <h4 class="font-bold text-lg mt-3 heading-font">${sc.title}</h4>
+                            </div>
+                            <div class="space-y-2 mt-4">
+                                <p class="text-xs text-white/80 italic">"Remember, real-world clinical safety hinges entirely on accurate assessments."</p>
+                                <div class="h-1 w-full bg-white/20 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-400 transition-all duration-300" style="width: ${((currentScenarioIdx + 1) / clinicalScenarios.length) * 100}%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question & Choices -->
+                        <div class="md:col-span-8 space-y-4">
+                            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                                <p class="text-sm text-slate-700 leading-relaxed font-medium">${sc.desc}</p>
+                            </div>
+                            <div id="scenario-choices" class="space-y-2">
+                                ${optionsHtml}
+                            </div>
+                            <div id="scenario-explanation" class="hidden bg-slate-50 border border-slate-200 p-4 rounded-xl text-xs space-y-2 text-slate-600 animate-fade-in">
+                                <!-- Generated upon submission -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function submitScenarioAnswer(idx) {
+            const sc = clinicalScenarios[currentScenarioIdx];
+            const opt = sc.options[idx];
+            
+            const explanationDiv = document.getElementById("scenario-explanation");
+            const choicesDiv = document.getElementById("scenario-choices");
+
+            explanationDiv.className = "bg-slate-50 border p-4 rounded-xl text-xs space-y-2 text-slate-600 animate-fade-in";
+            
+            // Render detailed rationale explanation
+            if (opt.correct) {
+                score += opt.points;
+                updateUI();
+                explanationDiv.classList.add("border-emerald-200", "bg-emerald-50/50");
+                explanationDiv.innerHTML = `
+                    <div class="font-bold text-emerald-800 text-sm">🎉 Correct Choice! +${opt.points} XP</div>
+                    <div>${opt.rationale}</div>
+                    <button onclick="advanceScenario()" class="mt-2 px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-[10px] hover:bg-emerald-700 uppercase tracking-widest">Next Shift Step</button>
+                `;
+            } else {
+                explanationDiv.classList.add("border-rose-200", "bg-rose-50/50");
+                explanationDiv.innerHTML = `
+                    <div class="font-bold text-rose-800 text-sm">❌ Clinical Risk Identified!</div>
+                    <div>${opt.rationale}</div>
+                    <p class="text-[10px] text-rose-500 font-bold mt-1">Review your precaution criteria and select another choice!</p>
+                `;
+            }
+            explanationDiv.classList.remove("hidden");
+        }
+
+        function advanceScenario() {
+            if (currentScenarioIdx < clinicalScenarios.length - 1) {
+                currentScenarioIdx++;
+                renderStep();
+            } else {
+                // Done with all scenarios! Go to certification
+                currentStep++;
+                renderStep();
+                updateUI();
+            }
+        }
+
+        // ==========================================
+        // MODULE 7: GRADUATION & RESULTS
+        // ==========================================
+        function renderResults(container) {
+            let maxPoints = 310; // Approximate total achievable
+            let rank = "Novice Assistant";
+            let message = "Keep studying! Infection control is a high-stakes practice that requires absolute consistency.";
+            let badgeIcon = "🏥";
+
+            if (score >= 280) {
+                rank = "Master Infection Control Defender";
+                message = "Incredible work! You demonstrated flawless understanding of aseptic principles, isolation routing, and protective sequencing. You are ready to safeguard patients!";
+                badgeIcon = "🛡️";
+            } else if (score >= 200) {
+                rank = "Qualified Nurse Associate";
+                message = "Well done! You have a secure grasp of foundational cleanliness safety. With practice, you will make this safety routine natural bedside muscle memory.";
+                badgeIcon = "⚕️";
+            }
+
+            container.innerHTML = `
+                <div class="space-y-6 text-center max-w-2xl mx-auto py-4">
+                    
+                    <!-- Medal/Rank Animation -->
+                    <div class="relative w-36 h-36 bg-gradient-to-tr from-teal-50 to-teal-100 rounded-full mx-auto flex items-center justify-center border-4 border-teal-500 shadow-xl animate-pulse">
+                        <span class="text-6xl">${badgeIcon}</span>
+                        <div class="absolute -bottom-2 bg-teal-600 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-widest shadow">
+                            ${rank}
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 mt-6">
+                        <h3 class="heading-font text-3xl font-extrabold text-slate-900">Lab Certification Achieved!</h3>
+                        <p class="text-slate-600 text-sm max-w-md mx-auto leading-relaxed">${message}</p>
+                    </div>
+
+                    <!-- Performance Stats Grid -->
+                    <div class="grid grid-cols-2 gap-4 bg-slate-50 border border-slate-200 p-5 rounded-2xl text-left">
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Earned score</span>
+                            <h4 class="text-2xl font-black text-slate-800">${score} XP</h4>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aseptic Competence</span>
+                            <h4 class="text-2xl font-black text-teal-600">${Math.round((score / maxPoints) * 100)}% Match</h4>
+                        </div>
+                    </div>
+
+                    <!-- Certificate Box -->
+                    <div class="border-2 border-double border-teal-500/50 bg-white p-6 rounded-3xl space-y-4">
+                        <h5 class="font-bold text-slate-900 tracking-tight text-xs uppercase text-teal-600 tracking-wider">Dean of Clinical Nursing Certification</h5>
+                        <p class="text-xs text-slate-500">This certifies that the user has successfully cleared the simulated **Infection Control 101: Safe Clinical Practice** sequence with distinction.</p>
+                        <div class="flex justify-between items-end border-t pt-4 text-left">
+                            <div>
+                                <span class="text-[8px] font-bold text-slate-400 block uppercase">Dean Signature</span>
+                                <span class="font-serif italic text-sm text-slate-600">Dean Sandra H. Henderson, PhD, RN</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[8px] font-bold text-slate-400 block uppercase">Dated Issued</span>
+                                <span class="text-xs font-bold text-slate-700">Simulated 2026</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
