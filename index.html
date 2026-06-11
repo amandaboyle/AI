@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Nursing Edge Pro | Executive Office</title>
+    <style>
+        :root {
+            --primary-color: #0d5c75;
+            --secondary-color: #1995ad;
+            --accent-color: #f1f1f2;
+            --dark-color: #2b2b2b;
+            --light-color: #ffffff;
+            --subtle-blue: #f4f9fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: var(--subtle-blue);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            padding: 2rem 5%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-area h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-area span {
+            color: var(--secondary-color);
+        }
+
+        nav a {
+            color: var(--light-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 5%;
+        }
+
+        .profile-card {
+            background-color: var(--light-color);
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            border: 3px solid var(--secondary-color);
+        }
+
+        .profile-card h2 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.2rem;
+        }
+
+        .title-badge {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: var(--light-color);
+            padding: 0.3rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .bio {
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .interactive-section {
+            background-color: var(--subtle-blue);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2.5rem;
+            border: 1px solid #e0ecef;
+        }
+
+        .interactive-section h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            border: none;
+            padding: 0.8rem 1.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 6px rgba(13, 92, 117, 0.2);
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        #message-display {
+            margin-top: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            min-height: 24px;
+            transition: all 0.3s;
+            opacity: 0;
+        }
+
+        .cta-link {
+            display: inline-block;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 4px;
+            transition: all 0.3s;
+        }
+
+        .cta-link:hover {
+            color: var(--secondary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 5rem;
+            color: #888;
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        @media (max-width: 600px) {
+            .header-container {
+                display: block;
+                text-align: center;
+            }
+            nav {
+                margin-top: 1rem;
+            }
+            .profile-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="logo-area">
+                <h1>The Nursing <span>Edge Pro</span></h1>
+            </div>
+            <nav>
+                <a href="infections.html">Infections Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="profile-card">
+            <div class="avatar">AB</div>
+            <h2>Amanda Boyle</h2>
+            <div class="title-badge">Chief Executive Officer</div>
+            
+            <p class="bio">
+                Welcome to The Nursing Edge Pro. Under corporate leadership, we are dedicated to driving innovation, advanced operational strategies, and clinical excellence across modern healthcare environments.
+            </p>
+
+            <div class="interactive-section">
+                <h3>Executive Insights</h3>
+                <p style="margin-bottom: 1rem; color: #666;">Click below to view the current leadership core value focus.</p>
+                <button id="action-btn">Reveal Focus</button>
+                <div id="message-display"></div>
+            </div>
+
+            <p>
+                Explore our critical medical protocols and clinical documentation: 
+                <a href="infections.html" class="cta-link">View Infections Log & Protocol →</a>
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 The Nursing Edge Pro. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const button = document.getElementById('action-btn');
+            const display = document.getElementById('message-display');
+            
+            const insights = [
+                "Strategic Vision: Empowering frontline clinicians with next-generation tools.",
+                "Clinical Excellence: Prioritizing absolute precision in infection control and patient data tracking.",
+                "Innovation First: Implementing seamless data ecosystems to sharpen our clinical edge.",
+                "Operational Care: Ensuring healthcare frameworks remain robust, compliant, and highly responsive."
+            ];
+            
+            let currentIndex = 0;
+
+            button.addEventListener('click', () => {
+                display.style.opacity = 0;
+                
+                setTimeout(() => {
+                    display.textContent = insights[currentIndex];
+                    display.style.opacity = 1;
+                    
+                    currentIndex = (currentIndex + 1) % insights.length;
+                }, 200);
+                
+                button.textContent = "Next Insight";
+            });
+        });
+    </script>
+</body>
+</html>
