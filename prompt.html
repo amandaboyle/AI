@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community College Lesson Prompt Generator</title>
+    <!-- Tailwind CSS for robust, modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for UI icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbars for clean code look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen font-sans">
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Academic Header -->
+        <header class="mb-8 text-center md:text-left md:flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div>
+                <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        <i class="fa-solid fa-graduation-cap mr-1"></i> Faculty Tool Suite
+                    </span>
+                </div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Pedagogical Lesson Prompt Architect</h1>
+                <p class="text-slate-500 mt-1 text-sm md:text-base">
+                    Structure instructionally sound, ADA-compliant, and active learning prompts for AI generators.
+                </p>
+            </div>
+            <div class="mt-4 md:mt-0 flex flex-wrap gap-2 justify-center">
+                <button onclick="loadTemplate('psych')" class="px-3 py-2 text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg border border-indigo-100 transition">
+                    <i class="fa-solid fa-brain mr-1"></i> Psychology Template
+                </button>
+                <button onclick="loadTemplate('math')" class="px-3 py-2 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg border border-emerald-100 transition">
+                    <i class="fa-solid fa-calculator mr-1"></i> College Algebra
+                </button>
+                <button onclick="loadTemplate('chem')" class="px-3 py-2 text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-lg border border-amber-100 transition">
+                    <i class="fa-solid fa-flask-vial mr-1"></i> Chemistry Lab
+                </button>
+                <button onclick="clearForm()" class="px-3 py-2 text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg border border-rose-100 transition">
+                    <i class="fa-solid fa-trash-can mr-1"></i> Clear Form
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Form Input Section -->
+            <section class="lg:col-span-7 space-y-6">
+                
+                <!-- Card 1: Meta-Information -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-indigo-600"></i> Course Context & Parameters
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
+                                Lesson Title
+                            </label>
+                            <input type="text" id="lessonTitle" oninput="updatePrompt()" 
+                                placeholder="e.g., Introduction to Mitosis" 
+                                class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                Target Audience
+                                <span class="text-[10px] text-slate-400 font-normal">Who is in your classroom?</span>
+                            </label>
+                            <input type="text" id="audience" oninput="updatePrompt()" 
+                                placeholder="e.g., First-generation college students, non-majors" 
+                                class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Curriculum Design -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-compass text-indigo-600"></i> Curricular Foundations
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                    Learning Objectives (SLOs)
+                                </label>
+                                <span class="text-[10px] text-indigo-600 font-semibold cursor-pointer" onclick="toggleBloomTips()">
+                                    <i class="fa-solid fa-circle-question"></i> Need Bloom's verbs?
+                                </span>
+                            </div>
+                            
+                            <!-- Hidden Bloom's Reference Tooltip Box -->
+                            <div id="bloomTips" class="hidden mb-3 p-3 bg-indigo-50 text-indigo-950 rounded-lg text-xs space-y-1 border border-indigo-100 transition-all">
+                                <p class="font-bold mb-1">Quick Bloom's Taxonomy Guide:</p>
+                                <div><strong>Remember/Understand:</strong> Define, identify, label, outline, explain.</div>
+                                <div><strong>Apply/Analyze:</strong> Calculate, diagram, distinguish, analyze, experiment.</div>
+                                <div><strong>Evaluate/Create:</strong> Design, critique, construct, defend, synthesize.</div>
+                            </div>
+
+                            <textarea id="objectives" oninput="updatePrompt()" rows="2"
+                                placeholder="e.g., By the end of this lesson, students will be able to distinguish between phases of mitosis and diagram chromosome movement..."
+                                class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
+                                    Core Topics Covered
+                                </label>
+                                <textarea id="topics" oninput="updatePrompt()" rows="2"
+                                    placeholder="e.g., Interphase, prophase, metaphase, spindle fibers, cytokinesis"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
+                                    Vocabulary / Key Terms
+                                </label>
+                                <textarea id="keyTerms" oninput="updatePrompt()" rows="2"
+                                    placeholder="e.g., Centromere, chromatid, diploid, somatic cells"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Interactive Learning, Team Projects, Case Studies, and Labs -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-users-gear text-indigo-600"></i> Active Learning Ecosystems
+                    </h2>
+                    <p class="text-slate-400 text-xs mb-4">Select instruction models to inject active, collaborative elements into the lesson plan.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <!-- Interactive Activities Option -->
+                        <div class="flex items-start p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition cursor-pointer">
+                            <input type="checkbox" id="hasInteractive" onchange="toggleActivityDetails('interactive'); updatePrompt();" class="mt-1 h-4.5 w-4.5 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                            <div class="ml-3">
+                                <label for="hasInteractive" class="font-bold text-slate-800 text-xs uppercase tracking-wider block cursor-pointer">Interactive Activities</label>
+                                <span class="text-slate-400 text-xs">Think-Pair-Share, polling, mini-debates</span>
+                                <input type="text" id="interactiveDesc" oninput="updatePrompt()" placeholder="e.g., PollEverywhere, Think-Pair-Share" class="hidden mt-2 w-full px-2 py-1 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Team Projects Option -->
+                        <div class="flex items-start p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition cursor-pointer">
+                            <input type="checkbox" id="hasTeamProjects" onchange="toggleActivityDetails('team'); updatePrompt();" class="mt-1 h-4.5 w-4.5 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                            <div class="ml-3">
+                                <label for="hasTeamProjects" class="font-bold text-slate-800 text-xs uppercase tracking-wider block cursor-pointer">Team Projects</label>
+                                <span class="text-slate-400 text-xs">Collaborative problems, group poster tasks</span>
+                                <input type="text" id="teamDesc" oninput="updatePrompt()" placeholder="e.g., Breakout room poster session" class="hidden mt-2 w-full px-2 py-1 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Case Studies Option -->
+                        <div class="flex items-start p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition cursor-pointer">
+                            <input type="checkbox" id="hasCaseStudies" onchange="toggleActivityDetails('case'); updatePrompt();" class="mt-1 h-4.5 w-4.5 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                            <div class="ml-3">
+                                <label for="hasCaseStudies" class="font-bold text-slate-800 text-xs uppercase tracking-wider block cursor-pointer">Case Studies</label>
+                                <span class="text-slate-400 text-xs">Clinical scenarios, community issues, real data</span>
+                                <input type="text" id="caseDesc" oninput="updatePrompt()" placeholder="e.g., Local industry environmental audit scenario" class="hidden mt-2 w-full px-2 py-1 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Labs Option -->
+                        <div class="flex items-start p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition cursor-pointer">
+                            <input type="checkbox" id="hasLabs" onchange="toggleActivityDetails('labs'); updatePrompt();" class="mt-1 h-4.5 w-4.5 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                            <div class="ml-3">
+                                <label for="hasLabs" class="font-bold text-slate-800 text-xs uppercase tracking-wider block cursor-pointer">Labs / Hand-On</label>
+                                <span class="text-slate-400 text-xs">Simulations, experiments, software execution</span>
+                                <input type="text" id="labsDesc" oninput="updatePrompt()" placeholder="e.g., PhET online lab simulator module" class="hidden mt-2 w-full px-2 py-1 text-xs border border-slate-200 rounded focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Multi-Assessment Selector -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-square-poll-vertical text-indigo-600"></i> Multiple Assessment Checks
+                    </h2>
+                    <p class="text-slate-400 text-xs mb-4">Intertwine constructive feedback mechanism configurations inside the final prompt.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="p-3 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <div class="flex items-center mb-1">
+                                <input type="checkbox" id="assessDiag" onchange="updatePrompt()" class="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                                <label for="assessDiag" class="ml-2 font-bold text-slate-800 text-[11px] uppercase tracking-wider cursor-pointer">Diagnostic</label>
+                            </div>
+                            <span class="text-slate-400 text-[10px] block leading-tight">Assess background knowledge (K-W-L chart, entry pass).</span>
+                        </div>
+
+                        <div class="p-3 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <div class="flex items-center mb-1">
+                                <input type="checkbox" id="assessForm" onchange="updatePrompt()" class="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                                <label for="assessForm" class="ml-2 font-bold text-slate-800 text-[11px] uppercase tracking-wider cursor-pointer">Formative</label>
+                            </div>
+                            <span class="text-slate-400 text-[10px] block leading-tight">Immediate scaffolding check (muddiest point, exit tickets).</span>
+                        </div>
+
+                        <div class="p-3 border border-slate-100 rounded-xl bg-slate-50/50">
+                            <div class="flex items-center mb-1">
+                                <input type="checkbox" id="assessSumm" onchange="updatePrompt()" class="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300">
+                                <label for="assessSumm" class="ml-2 font-bold text-slate-800 text-[11px] uppercase tracking-wider cursor-pointer">Summative</label>
+                            </div>
+                            <span class="text-slate-400 text-[10px] block leading-tight">Mastery evaluation checkpoints (quizlets, project drafts).</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5: Inclusivity, ADA & Accessibility Core Principles -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-universal-access text-indigo-600"></i> Equity, Inclusivity & Real-World Framing
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start p-3 bg-indigo-50/40 rounded-xl border border-indigo-50">
+                            <input type="checkbox" id="hasAda" onchange="updatePrompt()" class="mt-1 h-4.5 w-4.5 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300" checked>
+                            <div class="ml-3">
+                                <label for="hasAda" class="font-bold text-slate-800 text-xs uppercase tracking-wider block cursor-pointer">ADA / UDL Compliance Elements</label>
+                                <span class="text-slate-500 text-xs">Automatically requires the AI to generate alternative text parameters, clear typography formatting, transcript guidelines, and multi-format delivery options.</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start p-3 bg-emerald-50/40 rounded-xl border border-emerald-50">
+                            <input type="checkbox" id="hasAnalogies" onchange="updatePrompt()" class="mt-1 h-4.5 w-4.5 rounded text-emerald-600 focus:ring-emerald-50 border-slate-300" checked>
+                            <div class="ml-3">
+                                <label for="hasAnalogies" class="font-bold text-slate-800 text-xs uppercase tracking-wider block cursor-pointer">Analogies & Real-World Examples</label>
+                                <span class="text-slate-500 text-xs">Demands that the AI produce contextualized analogies to simplify abstract theories for diverse/non-traditional learners.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Prompt Output & Action Panel -->
+            <section class="lg:col-span-5 flex flex-col h-full lg:sticky lg:top-8">
+                <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl flex flex-col flex-grow min-h-[500px] lg:min-h-0 border border-slate-800">
+                    
+                    <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <span class="flex h-3 w-3 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                            </span>
+                            <span class="font-bold text-sm tracking-wider uppercase text-slate-300">Generated AI Prompt</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400" id="promptSize">0 words</span>
+                        </div>
+                    </div>
+
+                    <!-- Prompt Textarea -->
+                    <div class="flex-grow relative">
+                        <textarea id="outputPrompt" readonly 
+                            class="w-full h-full min-h-[350px] lg:h-[calc(100vh-320px)] bg-slate-950 text-slate-200 p-4 rounded-xl border border-slate-800 focus:outline-none text-xs leading-relaxed font-mono resize-none"></textarea>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between gap-3">
+                        <button onclick="copyToClipboard()" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-950/50">
+                            <i class="fa-solid fa-copy"></i> Copy Structured Prompt
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Alert Modal for visual clipboard confirmation -->
+    <div id="copyAlert" class="hidden fixed bottom-6 right-6 bg-slate-900 text-white border border-slate-800 py-3 px-5 rounded-xl shadow-2xl items-center gap-3 transition-transform translate-y-20 duration-300">
+        <div class="h-6 w-6 bg-emerald-500 text-slate-950 rounded-full flex items-center justify-center">
+            <i class="fa-solid fa-check text-xs font-black"></i>
+        </div>
+        <div>
+            <p class="font-bold text-xs">System Status</p>
+            <p class="text-[10px] text-slate-400">Prompt copied to workspace clipboard successfully!</p>
+        </div>
+    </div>
+
+    <!-- Javascript Logic Core -->
+    <script>
+        // Set templates data object
+        const templates = {
+            psych: {
+                title: "Defense Mechanisms: Ego and Anxiety Protection",
+                audience: "Diverse group of first-year Community College students (non-majors, returning adult learners)",
+                objectives: "1. Define and identify the psychological defense mechanisms (projection, denial, rationalization, displacement).\n2. Apply defense mechanisms to evaluate everyday psychological reactions in short vignettes.",
+                topics: "Sigmund Freud's psychodynamic framework, adaptive vs. maladaptive ego defense, identification of clinical scenarios",
+                keyTerms: "The Ego, Projection, Displacement, Rationalization, Sublimation, Defense Mechanism",
+                activities: {
+                    interactive: true,
+                    interactiveVal: "Polling with mobile questions followed by Think-Pair-Share peer discussion of realistic case studies.",
+                    team: true,
+                    teamVal: "Small groups work together to outline custom modern-day creative sketches representing displacement.",
+                    case: true,
+                    caseVal: "Analyzing a case scenario of a coworker dealing with professional stress who displaces anger onto loved ones.",
+                    labs: false,
+                    labsVal: ""
+                },
+                assess: { diag: true, form: true, summ: false },
+                ada: true,
+                analogies: true
+            },
+            math: {
+                title: "Solving Linear Systems: Graphical and Analytical Methods",
+                audience: "College-level developmental algebra students with diverse math anxiety backgrounds",
+                objectives: "1. Find point of intersection coordinates for linear equations on Cartesian graphs.\n2. Formulate and solve systems of two linear equations representing actual consumer decisions.",
+                topics: "Slope-intercept plotting, Substitution technique, Elimination strategies, Real-world market equilibrium intersections",
+                keyTerms: "Independent system, Intersection point, Parallel lines, Coefficients, Standard form",
+                activities: {
+                    interactive: true,
+                    interactiveVal: "Live digital whiteboard polling checking correct graphical solutions before analytical processing.",
+                    team: false,
+                    teamVal: "",
+                    case: true,
+                    caseVal: "Evaluating cost tables for competing subscription choices (Gym A vs. Gym B) to find the breakeven point.",
+                    labs: true,
+                    labsVal: "Desmos online graphing lab simulation with custom sliders modeling dynamic variable shifts."
+                },
+                assess: { diag: true, form: true, summ: true },
+                ada: true,
+                analogies: true
+            },
+            chem: {
+                title: "Titration Techniques & Acid-Base Equilibrium",
+                audience: "General Chemistry students pursuing Allied Health majors or STEM pathways",
+                objectives: "1. Calculate precise molarity parameters of unknown solutions based on titration data inputs.\n2. Safely organize and run chemical setup equipment in a digital mock simulation or physical environment.",
+                topics: "Buret setups, indicators, neutralization chemical equations, equivalence endpoint math, quantitative solution prep",
+                keyTerms: "Titrant, Analyte, Phenolphthalein indicator, Equivalence point, Standardization process",
+                activities: {
+                    interactive: false,
+                    interactiveVal: "",
+                    team: true,
+                    teamVal: "Lab partners collaborate to cross-verify trial numbers and calculation calculations for the lab log.",
+                    case: false,
+                    caseVal: "",
+                    labs: true,
+                    labsVal: "Virtual online titration laboratory simulation running color changes during neutralizations."
+                },
+                assess: { diag: false, form: true, summ: true },
+                ada: true,
+                analogies: true
+            }
+        };
+
+        // Utility: Show/Hide activity detail fields on check
+        function toggleActivityDetails(type) {
+            const isChecked = document.getElementById('has' + capitalizeFirst(type)).checked;
+            const inputField = document.getElementById(type + 'Desc');
+            if (isChecked) {
+                inputField.classList.remove('hidden');
+            } else {
+                inputField.classList.add('hidden');
+            }
+        }
+
+        function capitalizeFirst(str) {
+            if (str === 'interactive') return 'Interactive';
+            if (str === 'team') return 'TeamProjects';
+            if (str === 'case') return 'CaseStudies';
+            if (str === 'labs') return 'Labs';
+            return str;
+        }
+
+        // Action: Load template presets
+        function loadTemplate(key) {
+            const data = templates[key];
+            if (!data) return;
+
+            document.getElementById('lessonTitle').value = data.title;
+            document.getElementById('audience').value = data.audience;
+            document.getElementById('objectives').value = data.objectives;
+            document.getElementById('topics').value = data.topics;
+            document.getElementById('keyTerms').value = data.keyTerms;
+
+            // Load Activities
+            document.getElementById('hasInteractive').checked = data.activities.interactive;
+            document.getElementById('interactiveDesc').value = data.activities.interactiveVal;
+            toggleActivityDetails('interactive');
+
+            document.getElementById('hasTeamProjects').checked = data.activities.team;
+            document.getElementById('teamDesc').value = data.activities.teamVal;
+            toggleActivityDetails('team');
+
+            document.getElementById('hasCaseStudies').checked = data.activities.case;
+            document.getElementById('caseDesc').value = data.activities.caseVal;
+            toggleActivityDetails('case');
+
+            document.getElementById('hasLabs').checked = data.activities.labs;
+            document.getElementById('labsDesc').value = data.activities.labsVal;
+            toggleActivityDetails('labs');
+
+            // Load Assessments
+            document.getElementById('assessDiag').checked = data.assess.diag;
+            document.getElementById('assessForm').checked = data.assess.form;
+            document.getElementById('assessSumm').checked = data.assess.summ;
+
+            // Load Inclusivity
+            document.getElementById('hasAda').checked = data.ada;
+            document.getElementById('hasAnalogies').checked = data.analogies;
+
+            updatePrompt();
+        }
+
+        // Action: Clear form fields
+        function clearForm() {
+            document.getElementById('lessonTitle').value = '';
+            document.getElementById('audience').value = '';
+            document.getElementById('objectives').value = '';
+            document.getElementById('topics').value = '';
+            document.getElementById('keyTerms').value = '';
+
+            document.getElementById('hasInteractive').checked = false;
+            document.getElementById('interactiveDesc').value = '';
+            document.getElementById('interactiveDesc').classList.add('hidden');
+
+            document.getElementById('hasTeamProjects').checked = false;
+            document.getElementById('teamDesc').value = '';
+            document.getElementById('teamDesc').classList.add('hidden');
+
+            document.getElementById('hasCaseStudies').checked = false;
+            document.getElementById('caseDesc').value = '';
+            document.getElementById('caseDesc').classList.add('hidden');
+
+            document.getElementById('hasLabs').checked = false;
+            document.getElementById('labsDesc').value = '';
+            document.getElementById('labsDesc').classList.add('hidden');
+
+            document.getElementById('assessDiag').checked = false;
+            document.getElementById('assessForm').checked = false;
+            document.getElementById('assessSumm').checked = false;
+
+            document.getElementById('hasAda').checked = true;
+            document.getElementById('hasAnalogies').checked = true;
+
+            updatePrompt();
+        }
+
+        // Action: Toggle Help Tooltips
+        function toggleBloomTips() {
+            const element = document.getElementById('bloomTips');
+            element.classList.toggle('hidden');
+        }
+
+        // Core Generation Algorithm
+        function updatePrompt() {
+            // Read basic inputs
+            const title = document.getElementById('lessonTitle').value.trim() || "[Insert Lesson Title]";
+            const audience = document.getElementById('audience').value.trim() || "Community College Students with diverse academic backgrounds and preparation levels";
+            const objectives = document.getElementById('objectives').value.trim() || "[Insert Student Learning Outcomes]";
+            const topics = document.getElementById('topics').value.trim() || "[Insert Core Lesson Topics]";
+            const keyTerms = document.getElementById('keyTerms').value.trim() || "[Insert Key Terms / Vocabulary]";
+
+            // Build activities lists
+            let activitiesList = [];
+            if (document.getElementById('hasInteractive').checked) {
+                const spec = document.getElementById('interactiveDesc').value.trim();
+                activitiesList.push(`- **Interactive Learning Activities**: Active, high-engagement instructional activities (such as ${spec || 'Think-Pair-Share, student response polling, active concept mapping'}).`);
+            }
+            if (document.getElementById('hasTeamProjects').checked) {
+                const spec = document.getElementById('teamDesc').value.trim();
+                activitiesList.push(`- **Team Projects**: Small-group collaborative problem-solving or peer discussions (such as ${spec || 'breakout rooms, structured team challenge prompts'}).`);
+            }
+            if (document.getElementById('hasCaseStudies').checked) {
+                const spec = document.getElementById('caseDesc').value.trim();
+                activitiesList.push(`- **Case Studies**: Real-world context analysis tasks (such as ${spec || 'clinical vignettes, local demographic challenges, or authentic business case studies'}).`);
+            }
+            if (document.getElementById('hasLabs').checked) {
+                const spec = document.getElementById('labsDesc').value.trim();
+                activitiesList.push(`- **Labs & Practical Simulations**: Experiential learning components (such as ${spec || 'hands-on experimentation, interactive simulator applications, or raw mock datasets to clean'}).`);
+            }
+
+            // Build assessment methods
+            let assessmentList = [];
+            if (document.getElementById('assessDiag').checked) {
+                assessmentList.push(`- **Diagnostic Assessment**: A diagnostic pre-test or class starter activity to reveal students' prior knowledge baseline.`);
+            }
+            if (document.getElementById('assessForm').checked) {
+                assessmentList.push(`- **Formative Assessment Checkpoints**: Low-stakes checkpoints (e.g., muddiest point questions, instant feedback polls, mid-lesson self-reflection, or exit tickets).`);
+            }
+            if (document.getElementById('assessSumm').checked) {
+                assessmentList.push(`- **Summative Assessment**: Master performance measurement elements (e.g., graded problem sets, multiple-choice exit quiz, or analytic rubrics matching target SLOs).`);
+            }
+
+            // Assemble the final prompt output string
+            let prompt = `Act as an expert Instructional Designer with deep expertise in pedagogy, Universal Design for Learning (UDL), and community college instruction. Your task is to design a comprehensive, highly engaging lesson plan based on the following specifications:\n\n`;
+            
+            prompt += `### COURSE & LESSON METADATA\n`;
+            prompt += `* **Lesson Title:** ${title}\n`;
+            prompt += `* **Target Student Demographic:** ${audience}\n\n`;
+
+            prompt += `### CURRICULAR ALIGNMENT\n`;
+            prompt += `* **Measurable Learning Objectives:** \n${objectives}\n`;
+            prompt += `* **Primary Academic Topics to Cover:** \n${topics}\n`;
+            prompt += `* **Vocabulary & Key Terms:** \n${keyTerms}\n\n`;
+
+            if (activitiesList.length > 0) {
+                prompt += `### SPECIFIED ACTIVE LEARNING CHANNELS\n`;
+                prompt += `Integrate these interactive active learning models directly into your instructional design schedule:\n`;
+                activitiesList.forEach(act => {
+                    prompt += `${act}\n`;
+                });
+                prompt += `\n`;
+            }
+
+            if (assessmentList.length > 0) {
+                prompt += `### STRATEGIC MEASUREMENT (ASSESSMENT METHODOLOGY)\n`;
+                prompt += `Integrate these diagnostic/formative/summative measurements throughout the flow of the session:\n`;
+                assessmentList.forEach(ass => {
+                    prompt += `${ass}\n`;
+                });
+                prompt += `\n`;
+            }
+
+            // Inclusivity and Scaffold rules
+            prompt += `### INSTRUCTIONAL SCAFFOLDING & PEDAGOGICAL DIRECTIVES\n`;
+            if (document.getElementById('hasAda').checked) {
+                prompt += `* **Universal Design for Learning (UDL) & ADA Compliance:** Ensure that materials include guidelines for alt-text on visual media, clean high-contrast presentation parameters, structural headings formatting, and options to convert oral instructions into readable scripts.\n`;
+            }
+            if (document.getElementById('hasAnalogies').checked) {
+                prompt += `* **Relatable Conceptual Analogies:** Provide vivid, non-academic analogies that link complex theories directly to daily lived experiences (e.g., explaining a computer bus system as a school transit system) to bridge the gap for students returning to school or encountering this material for the first time.\n`;
+            }
+            prompt += `* **Low-Stakes Scaffolding:** Create structured steps so that complex objectives are introduced with clear models, guiding hints, and developmental checks to accommodate varying levels of academic preparation.\n\n`;
+
+            // Clear format outputs
+            prompt += `### STRUCTURED LESSON OUTLINE OUTPUT FORMAT\n`;
+            prompt += `Provide a beautifully formatted output using standard markdown with the following specific sections:\n`;
+            prompt += `1.  **Warm-Up & Hook (10-15% of time):** An engaging, low-stakes introductory prompt that hooks interest and activates prior knowledge.\n`;
+            prompt += `2.  **Scaffolded Direct Instruction (Chunked delivery):** Break the concepts into structured 15-minute segments, each with corresponding checks for understanding.\n`;
+            prompt += `3.  **Active Learning Component Details:** Fully written scripts, scenario details, or discussion prompts for the selected active learning channels.\n`;
+            prompt += `4.  **Assessment Artifact Prompts:** The actual, ready-to-use text for the assessments requested (e.g., specific quiz questions, rubric criteria, or exit tickets).\n`;
+            prompt += `5.  **Teacher Preparation Checklist:** Quick, actionable bullet list summarizing how the instructor should prepare (digital tools to set up, printed worksheets, or board outlines).`;
+
+            // Display in editor
+            document.getElementById('outputPrompt').value = prompt;
+
+            // Word count display
+            const wordCount = prompt.split(/\s+/).filter(Boolean).length;
+            document.getElementById('promptSize').innerText = `${wordCount} words`;
+        }
+
+        // Action: Robust Copy to Clipboard function
+        function copyToClipboard() {
+            const promptTextArea = document.getElementById('outputPrompt');
+            
+            // Standard interactive selection fallback for sandboxed environments
+            promptTextArea.select();
+            promptTextArea.setSelectionRange(0, 99999); // Mobile
+            
+            try {
+                // Primary iframe-safe clipboard copying API
+                document.execCommand('copy');
+                
+                // Success visual validation pop-up
+                const alertModal = document.getElementById('copyAlert');
+                alertModal.classList.remove('hidden');
+                alertModal.classList.add('flex');
+                alertModal.classList.remove('translate-y-20');
+                
+                setTimeout(() => {
+                    alertModal.classList.add('translate-y-20');
+                    setTimeout(() => {
+                        alertModal.classList.remove('flex');
+                        alertModal.classList.add('hidden');
+                    }, 300);
+                }, 2500);
+
+            } catch (err) {
+                console.error('Copy mechanism failed', err);
+            }
+        }
+
+        // Init prompt generation on initial render
+        window.onload = function() {
+            loadTemplate('psych');
+        }
+    </script>
+</body>
+</html>
